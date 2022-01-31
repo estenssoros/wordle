@@ -38,7 +38,7 @@ var findCmd = &cobra.Command{
 		}
 		for _, notOrder := range notOrders {
 			if len(notOrder) != 5 {
-				return errors.Errorf("%s does not equal 5", notOrder)
+				return errors.Errorf("--not-order: %s does not have length 5", notOrder)
 			}
 		}
 		return nil
