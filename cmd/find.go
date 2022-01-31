@@ -21,9 +21,9 @@ var (
 
 func init() {
 	findCmd.Flags().StringVarP(&has, "has", "", "", "letters in word")
-	findCmd.Flags().StringVarP(&order, "order", "", "", "order of the word (_ is blank)")
+	findCmd.Flags().StringVarP(&order, "order", "", "", "order of the word (? is unknown)")
 	findCmd.Flags().StringVarP(&exclude, "exclude", "", "", "letters to exclude")
-	findCmd.Flags().StringArrayVarP(&notOrders, "not-order", "", []string{}, "letters we hae but not ordered")
+	findCmd.Flags().StringArrayVarP(&notOrders, "not-order", "", []string{}, "letters in the word but in wrong order (? is unknown)")
 }
 
 var findCmd = &cobra.Command{

@@ -5,7 +5,7 @@
 searches for words based on criteria
 
 ```
-wordle find --help                                                               
+wordle find --help                                  
 Usage:
   wordle find [flags]
 
@@ -13,8 +13,8 @@ Flags:
       --exclude string          letters to exclude
       --has string              letters in word
   -h, --help                    help for find
-      --not-order stringArray   letters we hae but not ordered
-      --order string            order of the word (_ is blank)
+      --not-order stringArray   letters in the word but in wrong order (? is unknown)
+      --order string            order of the word (? is unknown)
 
 ```
 
