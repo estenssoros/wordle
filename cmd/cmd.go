@@ -18,7 +18,7 @@ var data string
 
 var cmd = &cobra.Command{
 	Use:   "wordle",
-	Short: "",
+	Short: "tries to solve the daily wordle!",
 }
 
 func Execute() error {

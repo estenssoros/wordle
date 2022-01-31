@@ -102,3 +102,13 @@ func doesntMatch(word, pattern string) bool {
 	}
 	return true
 }
+
+func LetterCounts(words []string) map[rune]int {
+	lookup := map[rune]int{}
+	for _, word := range words {
+		for _, r := range word {
+			lookup[r]++
+		}
+	}
+	return lookup
+}

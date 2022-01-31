@@ -28,7 +28,7 @@ func init() {
 
 var findCmd = &cobra.Command{
 	Use:   "find",
-	Short: "",
+	Short: "attempts to find the solution to the daily wordle",
 	PreRunE: func(cmd *cobra.Command, args []string) error {
 		if len(has) > 5 {
 			return errors.New("has is greater than 5")

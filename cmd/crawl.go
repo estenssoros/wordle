@@ -7,19 +7,25 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/atotto/clipboard"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 var (
-	url   = "https://www.dictionary.com/e/crb-ajax/cached.php?page=%d&wordLength=5&letter=%s&action=get_wf_widget_page&pageType=4&nonce=83fdfeeef4"
-	aRune = 97
-	zRune = 122
+	url         = "https://www.dictionary.com/e/crb-ajax/cached.php?page=%d&wordLength=5&letter=%s&action=get_wf_widget_page&pageType=4&nonce=83fdfeeef4"
+	aRune       = 97
+	zRune       = 122
+	toClipboard bool
 )
+
+func init() {
+	crawlCmd.Flags().BoolVarP(&toClipboard, "clipboard", "", false, "output words to clipboard")
+}
 
 var crawlCmd = &cobra.Command{
 	Use:     "crawl",
-	Short:   "",
+	Short:   "crawls dictionary.com for 5 letter words.",
 	PreRunE: func(cmd *cobra.Command, args []string) error { return nil },
 	RunE: func(cmd *cobra.Command, args []string) error {
 		words := []string{}
@@ -29,6 +35,9 @@ var crawlCmd = &cobra.Command{
 				return errors.Wrap(err, "fetchLetterWords")
 			}
 			words = append(words, letterWords...)
+		}
+		if toClipboard {
+			return clipboard.WriteAll(strings.Join(words, "\n"))
 		}
 		for _, word := range words {
 			fmt.Println(word)
