@@ -2,12 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"math/rand"
 	"strings"
-	"time"
 
 	"github.com/estenssoros/wordle/internal/runes"
 	"github.com/estenssoros/wordle/internal/words"
+	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -44,31 +43,32 @@ var findCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		options, err := parseWords()
-		if err != nil {
-			return errors.Wrap(err, "parseWords")
-		}
+		client, err := words.NewClient(data)
 		if len(has) == 0 && len(order) == 0 && len(exclude) == 0 && len(notOrders) == 0 {
-			fmt.Println("random word:", randomWord(options))
+			fmt.Printf("random word: ")
+			color.Green(client.RandomWord())
+			fmt.Println()
 			return nil
 		}
-		has = addOrder(has, order)
-		choices := words.NotOrders(words.Orders(words.Excludes(words.Has(options, has), exclude), order), notOrders)
-		if len(choices) == 0 {
+		has = addNotOrder(addOrder(has, order), notOrders)
+		if err != nil {
+			return errors.Wrap(err, "words.NewClient")
+		}
+		client = client.Has(has).Excludes(exclude).Orders(order).NotOrders(notOrders).Rank()
+		if len(client.Words) == 0 {
 			return errors.New("no words found")
 		}
+
 		fmt.Println(strings.Repeat("-", 50))
-		if len(choices) == 1 {
-			fmt.Println(choices[0])
-			fmt.Println(strings.Repeat("-", 50))
+		defer fmt.Println(strings.Repeat("-", 50))
+
+		if len(client.Words) == 1 {
+			color.Green(client.Words[0])
 			return nil
 		}
-		fmt.Printf("try %s\n", randomWord(choices))
-		fmt.Println(strings.Repeat("-", 50))
-		for _, choice := range choices {
-			fmt.Println(choice)
+		for _, choice := range client.Words {
+			color.Green(choice)
 		}
-		fmt.Println(strings.Repeat("-", 50))
 		return nil
 	},
 }
@@ -85,7 +85,9 @@ func addOrder(has, order string) string {
 	return has
 }
 
-func randomWord(words []string) string {
-	rand.Seed(time.Now().Unix())
-	return words[rand.Intn(len(words))]
+func addNotOrder(has string, notOrders []string) string {
+	for _, notOrder := range notOrders {
+		has = addOrder(has, notOrder)
+	}
+	return has
 }

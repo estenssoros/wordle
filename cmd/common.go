@@ -19,14 +19,14 @@ var commonCmd = &cobra.Command{
 	Short:   "outputs a count of letters for all the words in data",
 	PreRunE: func(cmd *cobra.Command, args []string) error { return nil },
 	RunE: func(cmd *cobra.Command, args []string) error {
-		options, err := parseWords()
+		client, err := words.NewClient(data)
 		if err != nil {
-			return errors.Wrap(err, "parseWord")
+			return errors.Wrap(err, "words.NewClient")
 		}
-		letterCounts := words.LetterCounts(options)
-		counts := make([]Count, len(letterCounts))
+
+		counts := make([]Count, len(client.Lookup))
 		var i int
-		for l, c := range letterCounts {
+		for l, c := range client.Lookup {
 			counts[i] = Count{Letter: string(l), Count: c}
 			i++
 		}
